@@ -19,66 +19,71 @@ import { toast } from 'sonner';
 import axios, { AxiosError } from 'axios';
 import { CHAT_GROUP_URL } from '@/lib/apiEndPoints';
 import { clearCache } from '@/actions/common';
+import { Plus } from 'lucide-react';
 
-export default function CreateChat({user}:{user:CustomUser}) {
+export default function CreateChat({user, className}: {user: CustomUser, className?: string}) {
     const [open,setOpen]=useState(false)
     const [Loading,setIsLoading]=useState(false)
 
-        const { 
-            register, 
-            handleSubmit,
-            formState:{ errors } 
-        } = useForm<createChatSchemaType>({
-          resolver: zodResolver(createChatSchema)
-        });
+    const { 
+        register, 
+        handleSubmit,
+        formState:{ errors } 
+    } = useForm<createChatSchemaType>({
+        resolver: zodResolver(createChatSchema)
+    });
 
-        const onSubmit = async (payload:createChatSchemaType)=>{
-            try{
-                setIsLoading(true)
-                const {data}=await axios.post(CHAT_GROUP_URL,{...payload,user_id:user.id},{headers:{
-                    Authorization:user.token
-                }
-               })
-               if(data?.message){
+    const onSubmit = async (payload:createChatSchemaType)=>{
+        try{
+            setIsLoading(true)
+            const {data}=await axios.post(CHAT_GROUP_URL,{...payload,user_id:user.id},{headers:{
+                Authorization:user.token
+            }
+            })
+            if(data?.message){
                 clearCache("dashboard")
                 setIsLoading(false)
                 setOpen(false)
                 toast.success(data?.message)
-               }
-            } catch(error){
-                setIsLoading(false)
-                if(error instanceof AxiosError){
-                    toast.error(error.message)
-                }else{
-                    toast.error("Something went wrong.Please try again!")
-                }
+            }
+        } catch(error){
+            setIsLoading(false)
+            if(error instanceof AxiosError){
+                toast.error(error.message)
+            }else{
+                toast.error("Something went wrong.Please try again!")
             }
         }
+    }
 
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-  <DialogTrigger asChild>
-    <Button >Create Group</Button>
-  </DialogTrigger>
-  <DialogContent onInteractOutside={(e)=>e.preventDefault()}>
-    <DialogHeader>
-      <DialogTitle>Create your new Chat</DialogTitle>
-      
-    </DialogHeader>
-    <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='mt-4'>
-    <Input placeholder = 'Enter chat title' {...register("title")}/>
-    <span className='text-red-500'>{errors.title?.message}</span>
-        </div>
-<div className='mt-4'>
-    <Input placeholder = 'Enter chat passcode' {...register("passcode")}/>
-    <span className='text-red-500'>{errors.passcode?.message}</span>
-</div>
-<div className='mt-4'>
-    <Button className='w-full' disabled={Loading}>{Loading ?"Processing..." :"Submit"}</Button>
-</div>
-    </form>
-  </DialogContent>
-</Dialog>
-  )
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button className={className} variant="default">
+                    <Plus className="h-4 w-4" />
+                    Create Group
+                </Button>
+            </DialogTrigger>
+            <DialogContent onInteractOutside={(e)=>e.preventDefault()}>
+                <DialogHeader>
+                    <DialogTitle>Create your new Chat</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className='mt-4'>
+                        <Input placeholder='Enter chat title' {...register("title")}/>
+                        <span className='text-red-500'>{errors.title?.message}</span>
+                    </div>
+                    <div className='mt-4'>
+                        <Input placeholder='Enter chat passcode' {...register("passcode")}/>
+                        <span className='text-red-500'>{errors.passcode?.message}</span>
+                    </div>
+                    <div className='mt-4'>
+                        <Button className='w-full' disabled={Loading}>
+                            {Loading ? "Processing..." : "Create Chat Group"}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
 }

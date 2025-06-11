@@ -1,16 +1,24 @@
 import React from 'react'
 import ProfileMenu from '../auth/ProfileMenu'
+import { MessageCircle } from 'lucide-react'
+import Link from 'next/link'
 
-export default function DashNav({name,image}:{name:string,image?:string}) {
+export default function DashNav({name, image}: {name: string, image?: string}) {
   return (
-    <nav className="p-6 flex justify-between items-center bg-white shadow-sm">
-        <h1 className="text-xl md:text-2xl font-extrabold">QuickChat</h1>
-      <div className="flex items-center space-x-2 md:space-x-6 text-gray-700">
-        <ProfileMenu name={name} image={image}/>
+    <nav className="sticky top-0 z-50 w-full border-b bg-white/75 backdrop-blur-lg">
+      <div className="container flex h-16 items-center px-4">
+        <Link href="/" className="flex items-center gap-2 font-bold">
+          <MessageCircle className="h-6 w-6 text-indigo-600" />
+          <span className="text-xl">QuickChat</span>
+        </Link>
         
-        
-        
+        <div className="ml-auto flex items-center gap-4">
+          <div className="text-sm text-gray-500">
+            Welcome back, <span className="font-medium text-gray-900">{name}</span>
+          </div>
+          <ProfileMenu name={name} image={image}/>
         </div>
+      </div>
     </nav>
   )
 }

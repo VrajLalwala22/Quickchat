@@ -25,8 +25,25 @@ A real-time chat application built with modern web technologies.
 
 Before running this project, make sure you have the following installed:
 - Node.js (Latest LTS version)
-- Redis server running on localhost:6379
+- Docker and Docker Compose
 - PostgreSQL (required for Prisma)
+
+### Setting up Redis with Docker
+
+1. Make sure Docker is running on your system
+2. Run Redis using Docker Compose:
+```bash
+docker-compose up -d
+```
+
+This will start Redis Stack which includes:
+- Redis server on port 6379
+- RedisInsight (GUI) on port 8001 (access via http://localhost:8001)
+
+To stop Redis:
+```bash
+docker-compose down
+```
 
 ## 🛠️ Installation
 
