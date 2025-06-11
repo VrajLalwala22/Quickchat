@@ -7,12 +7,15 @@ import Routes from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { setupSocket } from "./socket.js";
+import { createAdapter } from "@socket.io/redis-streams-adapter";
+import redis from "./config/redis.config.js";
 
 const server = createServer(app);
 const io = new Server(server,{
   cors:{
     origin:"*",
-  }
+  },
+  adapter:createAdapter(redis)
 });
 
 setupSocket(io)
